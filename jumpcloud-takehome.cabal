@@ -1,0 +1,78 @@
+cabal-version:      2.4
+name:               jumpcloud-takehome
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+synopsis:           Multi-threaded time tracker library for exercise
+
+-- A longer description of the package.
+description:        This is a library that allows you to maintain an exercise
+                    log and 
+
+-- A URL where users can report bugs.
+-- bug-reports:
+
+-- The license under which the package is released.
+-- license:
+author:             Kyle Butt
+maintainer:         kyle@iteratee.net
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+library
+    exposed-modules:  ExerciseTracker
+    ghc-options:
+      -Wall
+      -Wcompat
+      -Wincomplete-record-updates
+      -Wincomplete-uni-patterns
+      -Wredundant-constraints
+
+    -- Modules included in this library but not exported.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    
+        base ^>=4.13.0.0,
+        aeson >= 1.4.0.0 && < 2.0.0.0,
+        bytestring >= 0.9.0.0 && < 0.11.0.0,
+        containers >= 0.5.0.0 && < 0.7.0.0,
+        stm >= 2.5.0.0 && < 3.0.0.0,
+        text >= 1.2.0.0 && < 2.0.0.0,
+
+    hs-source-dirs:   src
+    default-language: Haskell2010
+
+test-suite jumpcloud-takehome-test-hunit-plus
+    main-is:          Main.hs
+    type:             exitcode-stdio-1.0
+    build-depends:
+        base ^>= 4.13.0.0,
+        HUnit-Plus >= 2.0.0 && <= 3.0.0,
+        async >= 2.2.0 && < 3.0.0,
+        aeson >= 1.4.0.0 && < 2.0.0.0,
+        bytestring >= 0.9.0.0 && < 0.11.0.0,
+        containers >= 0.5.0.0 && < 0.7.0.0,
+        random-shuffle >= 0.0.4 && < 0.1.0,
+        stm >= 2.5.0.0 && < 3.0.0.0,
+        text >= 1.2.0.0 && < 2.0.0.0,
+        jumpcloud-takehome,
+    ghc-options:
+      -Wall
+      -Wcompat
+      -Wincomplete-record-updates
+      -Wincomplete-uni-patterns
+      -Wredundant-constraints
+      -threaded
+      -rtsopts
+      -with-rtsopts=-N
+    other-modules:
+      TestSingleThread
+      TestMultiThread
+
+    hs-source-dirs:   test
+    default-language: Haskell2010
