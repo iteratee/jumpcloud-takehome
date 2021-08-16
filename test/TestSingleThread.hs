@@ -11,8 +11,9 @@ module TestSingleThread
 
 import           Control.Concurrent.STM.TVar
 import           Control.Exception           (AssertionFailed (..), throwIO)
-import           Data.Aeson                  (encode, eitherDecodeStrict')
-import           Data.ByteString.Lazy         (toStrict)
+import           Data.Aeson                  (eitherDecodeStrict', encode)
+import           Data.ByteString.Lazy        (toStrict)
+import           Data.Foldable               (forM_)
 import qualified Data.Map                    as Map
 import           Data.Text                   (Text)
 import           ExerciseTracker
@@ -33,7 +34,7 @@ testParseFail =
   (assertThrowsExact
      (ParseError "Error in $: key \"time\" not found")
      (do mapVar <- emptyActivityMap
-         addLogJson "{\"action\":\"jump\", \"tim\":200}" mapVar))
+         addActionJson "{\"action\":\"jump\", \"tim\":200}" mapVar))
 
 testIncrementsCountSingle :: TVar ActivityMap -> Text -> IO ()
 testIncrementsCountSingle activityMapVar key = do
@@ -42,7 +43,7 @@ testIncrementsCountSingle activityMapVar key = do
     case Map.lookup key curMap of
       Nothing     -> return 0
       Just logVar -> fmap activityCount (readTVarIO logVar)
-  addLog
+  addAction
     ActivityRecord {activityName = key, activityDuration = 10.0}
     activityMapVar
   newMap <- readTVarIO activityMapVar
@@ -68,7 +69,7 @@ testIncrementsDurationSingle activityMapVar key duration = do
       Nothing -> return 0
       Just logVar ->
         fmap (\ActivityLog {..} -> activityDuration) (readTVarIO logVar)
-  addLog
+  addAction
     ActivityRecord {activityName = key, activityDuration = duration}
     activityMapVar
   newMap <- readTVarIO activityMapVar
@@ -94,15 +95,24 @@ testIncrementsDuration =
             ]
       mapM_
         (\(key, duration) -> testIncrementsDurationSingle mapVar key duration)
-        pairs)
+        pairs
+      averages <- getStats mapVar
+      forM_
+        averages
+        (\ActivityAverage {..} ->
+           assertEqual
+             "Average of 10 through 50 by 10s is 30"
+             30
+             activityAverage))
 
 testSerialization :: Test
 testSerialization =
   "TestSerialization" ~:
   (assertEqual
-    "Should serialize to example JSON"
-    "{\"action\":\"jump\",\"avg\":150.0}"
-    (toStrict $ encode $ ActivityAverage { activityName = "jump", activityAverage = 150 }))
+     "Should serialize to example JSON"
+     "{\"action\":\"jump\",\"avg\":150.0}"
+     (toStrict $
+      encode $ ActivityAverage {activityName = "jump", activityAverage = 150}))
 
 suite :: TestSuite
 suite =

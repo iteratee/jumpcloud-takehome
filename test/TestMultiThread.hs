@@ -7,11 +7,16 @@ module TestMultiThread
   ( suite
   ) where
 
+import           Control.Concurrent          (myThreadId, threadCapability)
 import           Control.Concurrent.Async    (forConcurrently_)
 import           Control.Concurrent.STM.TVar
+import qualified Control.Logging             as Log
 import           Control.Monad               (forM_)
 import qualified Data.Map                    as Map
 import qualified Data.Text                   as Text
+import qualified Data.Text.Lazy              as Text (toStrict)
+import qualified Data.Text.Lazy.Builder      as Builder
+import qualified Data.Text.Lazy.Builder.Int  as Builder (decimal)
 import           ExerciseTracker
 import           System.Random.Shuffle
 
@@ -26,8 +31,12 @@ testMultiThread =
       shufPairs <- shuffleM pairs
       forConcurrently_
         shufPairs
-        (\(key, duration) ->
-           addLog
+        (\(key, duration) -> do
+           (cap, _) <- myThreadId >>= threadCapability
+           let msgBuilder =
+                 Builder.fromText "Running on cap: " <> Builder.decimal cap
+           Log.debug (Text.toStrict $ Builder.toLazyText $ msgBuilder)
+           addAction
              ActivityRecord {activityName = key, activityDuration = duration}
              mapVar)
       curMap <- readTVarIO mapVar

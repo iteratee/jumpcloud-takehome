@@ -37,7 +37,7 @@ library
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:    
-        base ^>=4.13.0.0,
+        base >= 4.11.0.0 && < 5.0.0.0,
         aeson >= 1.4.0.0 && < 2.0.0.0,
         bytestring >= 0.9.0.0 && < 0.11.0.0,
         containers >= 0.5.0.0 && < 0.7.0.0,
@@ -51,12 +51,13 @@ test-suite jumpcloud-takehome-test-hunit-plus
     main-is:          Main.hs
     type:             exitcode-stdio-1.0
     build-depends:
-        base ^>= 4.13.0.0,
+        base >= 4.11.0.0 && < 5.0.0.0,
         HUnit-Plus >= 2.0.0 && <= 3.0.0,
         async >= 2.2.0 && < 3.0.0,
         aeson >= 1.4.0.0 && < 2.0.0.0,
         bytestring >= 0.9.0.0 && < 0.11.0.0,
         containers >= 0.5.0.0 && < 0.7.0.0,
+        logging >= 3.0.0.0 && < 4.0.0.0,
         random-shuffle >= 0.0.4 && < 0.1.0,
         stm >= 2.5.0.0 && < 3.0.0.0,
         text >= 1.2.0.0 && < 2.0.0.0,
