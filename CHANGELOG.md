@@ -1,5 +1,5 @@
 # Revision history for haskell
 
-## 0.1.0.0 -- YYYY-mm-dd
+## 0.1.0.0 -- 2021-08-16
 
-* First version. Released on an unsuspecting world.
+* First version. Uses STM for concurrent access to a Map. Has tests included concurrent test.
