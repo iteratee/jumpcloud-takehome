@@ -7,7 +7,9 @@ synopsis:           Multi-threaded time tracker library for exercise
 
 -- A longer description of the package.
 description:        This is a library that allows you to maintain an exercise
-                    log and 
+                    log and compute average duration for acivities
+
+                    The main content of the library is in the 'ExerciseTracker' module
 
 -- A URL where users can report bugs.
 -- bug-reports:

@@ -41,7 +41,9 @@ import           Data.Word
 -- | Data to compute an average duration
 data ActivityLog = ActivityLog
   { activityCount    :: !Word64
+    -- ^ Number of sessions recorded, used to compute the average
   , activityDuration :: !Double
+    -- ^ Total duration of all sessions
   } deriving (Eq, Ord, Show)
 
 -- | An empty ActivityLog has a duration of 0 and a count of 0
@@ -53,7 +55,9 @@ emptyActivityLog = ActivityLog {activityCount = 0, activityDuration = 0}
 --   Used to update an 'ActivityLog' inside an 'ActivityMap'
 data ActivityRecord = ActivityRecord
   { activityName     :: !Text
+    -- ^ Name of the activity
   , activityDuration :: !Double
+    -- ^ Duration of the single activity session
   } deriving (Eq, Ord, Show)
 
 -- Conversion instance from JSON to 'ActivityRecord'
@@ -65,7 +69,9 @@ instance FromJSON ActivityRecord where
 -- | Result record showing the average duration of an activity
 data ActivityAverage = ActivityAverage
   { activityName    :: !Text
+    -- ^ Name of the activity
   , activityAverage :: !Double
+    -- ^ Average duration of all sessions for this activity
   } deriving (Eq, Ord, Show)
 
 -- | Exception thrown when invalid JSON is supplied for an 'ActivityRecord'
@@ -82,7 +88,7 @@ instance ToJSON ActivityAverage where
   toEncoding ActivityAverage {..} =
     pairs ("action" .= activityName <> "avg" .= activityAverage)
 
--- | A Map from 'Text' activity names to 'ActivityLogs' that can be used to find
+-- | A Map from 'Text' activity names to 'ActivityLog's that can be used to find
 --   the current average duration for varioous activities
 type ActivityMap = Map Text (TVar ActivityLog)
 
@@ -157,6 +163,6 @@ getStats mapVar = do
                  }
 
 -- | Build an empty activity map
---   Call in order to be able to use 'addLog' or 'getStats'
+--   Call in order to be able to use 'addAction' or 'getStats'
 emptyActivityMap :: IO (TVar ActivityMap)
 emptyActivityMap = newTVarIO Map.empty

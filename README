@@ -1,0 +1,14 @@
+Instructions for building and running tests:
+
+With Docker
+$ docker build . -t <tag name>
+$ docker run -ti <tag name>
+
+In order to view all documentation:
+$ sudo apt install haskell-platform cabal-install haskell-platform-doc libexpat1-dev
+(Or an appropriate substitute for non-debian distributions)
+$ cabal v2-build --enable-documentation
+The last two lines of output should look like:
+  Documentation created:
+  <path>/index.html
+$ firefox <path>/index.html
